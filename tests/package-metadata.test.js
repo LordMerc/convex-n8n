@@ -60,16 +60,13 @@ test('publish workflow installs from the lockfile before upgrading npm', () => {
 	assert.ok(installIndex < upgradeIndex, 'npm ci should use the Node-bundled npm version');
 });
 
-test('manual v0.1.0 recovery is restricted to main and checks out the protected tag', () => {
+test('publish workflow is tokenless and runs only for protected version tags', () => {
 	const workflow = fs.readFileSync(path.join(root, '.github/workflows/publish.yml'), 'utf8');
 
-	assert.match(
-		workflow,
-		/if: github\.event_name == 'push' \|\| github\.ref == 'refs\/heads\/main'/,
-	);
-	assert.match(
-		workflow,
-		/ref: \$\{\{ github\.event_name == 'workflow_dispatch' && 'refs\/tags\/v0\.1\.0' \|\| github\.ref \}\}/,
-	);
-	assert.equal((workflow.match(/NODE_AUTH_TOKEN:/g) ?? []).length, 1);
+	assert.match(workflow, /tags:\s*\n\s*- 'v\*\.\*\.\*'/);
+	assert.doesNotMatch(workflow, /workflow_dispatch/);
+	assert.doesNotMatch(workflow, /NODE_AUTH_TOKEN/);
+	assert.doesNotMatch(workflow, /secrets\./);
+	assert.match(workflow, /environment:\s*\n\s*name: npm-publish/);
+	assert.match(workflow, /id-token: write/);
 });
