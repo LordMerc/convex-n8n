@@ -13,6 +13,8 @@
 name: Publish
 
 on:
+  # Temporary first-release recovery path. Remove after v0.1.0 is published.
+  workflow_dispatch:
   push:
     tags:
       - 'v*.*.*'
@@ -29,6 +31,7 @@ concurrency:
 jobs:
   publish:
     name: Publish to npm
+    if: github.event_name == 'push' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: npm-publish
@@ -38,18 +41,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && 'refs/tags/v0.1.0' || github.ref }}
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.22.0'
           cache: npm
           registry-url: 'https://registry.npmjs.org/'
-      # The npm bundled with Node 22.x is 10.x, which has no OIDC token exchange.
-      # Trusted Publishing needs npm >= 11.5.1; without this the publish fails at
-      # auth because no NPM_TOKEN is (or should be) present.
+      # Install with the npm version bundled with Node 22 so package-lock.json is
+      # interpreted exactly as it is in CI. Upgrade only for the publish step.
+      - run: npm ci
+      # Trusted Publishing needs npm >= 11.5.1 for its OIDC token exchange.
       - name: Upgrade npm for OIDC trusted publishing
         run: npm install -g npm@^11.5.1
-      - run: npm ci
       - run: npm test
       # ONE-TIME v0.1.0 bootstrap. Remove this token binding immediately after
       # the package exists on npm and before enabling Trusted Publishing.
