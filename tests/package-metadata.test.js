@@ -43,14 +43,9 @@ test('package metadata is publishable and registers both nodes and credentials',
 	assert.equal(pkg.peerDependencies['n8n-workflow'], '*');
 	assert.equal(pkg.publishConfig.access, 'public');
 	assert.equal(pkg.publishConfig.provenance, true);
-	// The GitHub origin is not wired up yet. These stay absent-or-valid so adding
-	// a real homepage/repository later (README "Publishing setup" step 1) does not
-	// have to come with a test edit.
-	if (pkg.homepage !== undefined) {
-		assert.match(pkg.homepage, /^https:\/\//);
-	}
-	if (pkg.repository !== undefined) {
-		const url = typeof pkg.repository === 'string' ? pkg.repository : pkg.repository.url;
-		assert.match(url, /^(git\+)?https:\/\//);
-	}
+	assert.deepEqual(pkg.repository, {
+		type: 'git',
+		url: 'git+https://github.com/LordMerc/convex-n8n.git',
+	});
+	assert.equal(pkg.homepage, 'https://github.com/LordMerc/convex-n8n#readme');
 });

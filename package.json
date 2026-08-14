@@ -3,6 +3,11 @@
 	"version": "0.1.0",
 	"description": "n8n community nodes for Convex functions, HTTP Actions, and read-only Platform discovery",
 	"license": "MIT",
+	"homepage": "https://github.com/LordMerc/convex-n8n#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/LordMerc/convex-n8n.git"
+	},
 	"keywords": [
 		"n8n-community-node-package"
 	],
