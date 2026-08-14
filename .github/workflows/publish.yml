@@ -51,5 +51,9 @@ jobs:
         run: npm install -g npm@^11.5.1
       - run: npm ci
       - run: npm test
+      # ONE-TIME v0.1.0 bootstrap. Remove this token binding immediately after
+      # the package exists on npm and before enabling Trusted Publishing.
       - name: Release with npm provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm run release
