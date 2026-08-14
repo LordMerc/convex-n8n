@@ -1,0 +1,18 @@
+{
+	"node": "@lordmerc/n8n-nodes-convex.convex",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development", "Developer Tools"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://docs.n8n.io/integrations/creating-nodes/build/reference/credentials-files/"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://docs.convex.dev/http-api/"
+			}
+		]
+	}
+}
