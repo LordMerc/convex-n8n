@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" role="img" aria-labelledby="title">
+	<title id="title">Convex community integration</title>
+	<path fill="#f3f4f6" d="M12 2.5 21.5 8v8L12 21.5 2.5 16V8L12 2.5Zm0 2.3L4.5 9.1v5.8l7.5 4.3 7.5-4.3V9.1L12 4.8Z"/>
+	<path fill="#f3f4f6" d="m8.1 10.4 3.9-2.2 3.9 2.2v3.2L12 15.8l-3.9-2.2v-3.2Zm3.9.1-1.9 1.1v.8l1.9 1.1 1.9-1.1v-.8L12 10.5Z"/>
+</svg>
