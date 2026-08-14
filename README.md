@@ -84,16 +84,12 @@ npm run dev
 
 ## Publishing Setup
 
-Publishing is intentionally inactive until a public GitHub origin exists. After creating the GitHub repository and adding it as this repository's `origin`:
+Releases are published from GitHub Actions with npm Trusted Publishing (OIDC); no npm tokens are stored in the repository.
 
-1. Add the exact GitHub repository URL to this package's `repository` and `homepage` metadata, then commit and push the initial repository.
-2. Protect the GitHub environment named `npm-publish` with required reviewers and restrict releases to protected `v*.*.*` version tags.
-3. Bootstrap `@lordmerc/n8n-nodes-convex@0.1.0` once from a GitHub-hosted Actions run using a short-expiry, granular npm access token with bypass 2FA enabled. Temporarily supply it to the release step as `NODE_AUTH_TOKEN`, keep provenance enabled, then delete both the secret and its workflow wiring immediately after the package exists. npm does not allow Trusted Publishing to be configured for a package that has not been published yet.
-4. In the new npm package's settings, add a GitHub Actions Trusted Publisher using the repository's actual owner and name, the workflow filename `publish.yml`, the environment `npm-publish`, and the `npm publish` permission.
-5. For every later release, keep `NPM_TOKEN` and other long-lived npm credentials absent. The publish job exchanges its GitHub OIDC token with npm.
-6. Run `npm run release` from a clean, up-to-date `main` branch. Its version tag must be a full `v*.*.*` version tag (for example, `v0.1.1`) for the publish workflow to run.
-
-The committed workflow is the steady-state, tokenless workflow. It uses the starter-supported release command, which lints, builds, and publishes the scoped package publicly with an npm provenance attestation in GitHub Actions. The one-time bootstrap credential is deliberately not wired into this repository while no GitHub origin exists.
+- The npm package `@lordmerc/n8n-nodes-convex` has a GitHub Actions Trusted Publisher configured for this repository, the workflow `publish.yml`, and the environment `npm-publish`.
+- The `npm-publish` GitHub environment is protected with required reviewers, and releases run only for `v*.*.*` version tags.
+- Keep `NPM_TOKEN` and other long-lived npm credentials absent. The publish job exchanges its GitHub OIDC token with npm.
+- To release, run `npm run release` from a clean, up-to-date `main` branch. It creates a full `v*.*.*` version tag (for example, `v0.1.1`), and pushing that tag runs the publish workflow, which lints, builds, and publishes the scoped package publicly with an npm provenance attestation.
 
 ## Limitations
 
