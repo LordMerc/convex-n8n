@@ -49,3 +49,27 @@ test('package metadata is publishable and registers both nodes and credentials',
 	});
 	assert.equal(pkg.homepage, 'https://github.com/LordMerc/convex-n8n#readme');
 });
+
+test('publish workflow installs from the lockfile before upgrading npm', () => {
+	const workflow = fs.readFileSync(path.join(root, '.github/workflows/publish.yml'), 'utf8');
+	const installIndex = workflow.indexOf('- run: npm ci');
+	const upgradeIndex = workflow.indexOf('- name: Upgrade npm for OIDC trusted publishing');
+
+	assert.notEqual(installIndex, -1, 'publish workflow should run npm ci');
+	assert.notEqual(upgradeIndex, -1, 'publish workflow should upgrade npm for publishing');
+	assert.ok(installIndex < upgradeIndex, 'npm ci should use the Node-bundled npm version');
+});
+
+test('manual v0.1.0 recovery is restricted to main and checks out the protected tag', () => {
+	const workflow = fs.readFileSync(path.join(root, '.github/workflows/publish.yml'), 'utf8');
+
+	assert.match(
+		workflow,
+		/if: github\.event_name == 'push' \|\| github\.ref == 'refs\/heads\/main'/,
+	);
+	assert.match(
+		workflow,
+		/ref: \$\{\{ github\.event_name == 'workflow_dispatch' && 'refs\/tags\/v0\.1\.0' \|\| github\.ref \}\}/,
+	);
+	assert.equal((workflow.match(/NODE_AUTH_TOKEN:/g) ?? []).length, 1);
+});
