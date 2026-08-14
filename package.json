@@ -1,0 +1,58 @@
+{
+	"name": "@lordmerc/n8n-nodes-convex",
+	"version": "0.1.0",
+	"description": "n8n community nodes for Convex functions, HTTP Actions, and read-only Platform discovery",
+	"license": "MIT",
+	"keywords": [
+		"n8n-community-node-package"
+	],
+	"author": {
+		"name": "Mike Boyd",
+		"email": "lordmercrbx@gmail.com"
+	},
+	"engines": {
+		"node": ">=20.19"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"pretest": "npm run build",
+		"test": "node --test",
+		"pack:dry": "npm pack --dry-run",
+		"verify": "npm run lint && npm test && npm run pack:dry",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist",
+		"!dist/tsconfig.tsbuildinfo"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/ConvexApi.credentials.js",
+			"dist/credentials/ConvexTeamApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Convex/Convex.node.js",
+			"dist/nodes/ConvexPlatform/ConvexPlatform.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "~0.43.3",
+		"eslint": "9.39.4",
+		"prettier": "3.8.3",
+		"release-it": "20.2.0",
+		"typescript": "5.9.3"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
