@@ -1,20 +1,16 @@
 # Publishes this package only after a protected version tag is pushed.
 #
-# This is the steady-state workflow used after the package exists on npm. npm
-# Trusted Publishing cannot be configured for an unpublished package, so follow
-# the README's one-time bootstrap instructions first. Then configure npm with
-# the GitHub origin's owner and repository, this workflow name (publish.yml),
-# and the npm-publish environment. Protect that GitHub environment with required
-# reviewers. This job uses GitHub OIDC; do not retain NPM_TOKEN or any other
-# long-lived npm credential or secret.
+# Steady-state tokenless publishing: npm Trusted Publishing is configured for
+# this package (repo LordMerc/convex-n8n, workflow publish.yml, environment
+# npm-publish, protected by required reviewers). The job exchanges its GitHub
+# OIDC token with npm; do not add NPM_TOKEN or any other long-lived npm
+# credential or secret.
 #
 # The starter-supported `npm run release` command detects GitHub Actions, runs
 # lint and build, and calls npm publish with provenance enabled.
 name: Publish
 
 on:
-  # Temporary first-release recovery path. Remove after v0.1.0 is published.
-  workflow_dispatch:
   push:
     tags:
       - 'v*.*.*'
@@ -31,7 +27,6 @@ concurrency:
 jobs:
   publish:
     name: Publish to npm
-    if: github.event_name == 'push' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: npm-publish
@@ -41,8 +36,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && 'refs/tags/v0.1.0' || github.ref }}
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -56,9 +49,5 @@ jobs:
       - name: Upgrade npm for OIDC trusted publishing
         run: npm install -g npm@^11.5.1
       - run: npm test
-      # ONE-TIME v0.1.0 bootstrap. Remove this token binding immediately after
-      # the package exists on npm and before enabling Trusted Publishing.
       - name: Release with npm provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm run release
